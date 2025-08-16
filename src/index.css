@@ -1,3 +1,7 @@
 @import "tailwindcss";
 @plugin "daisyui";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+
+@layer base {
+  --bg-color: #fff9af;
+}

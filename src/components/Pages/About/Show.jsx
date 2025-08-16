@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Show = () => {
   let { id } = useParams();
@@ -8,11 +8,7 @@ const Show = () => {
   //for removing dashes
   // let array = q.split("-");
   // let result = array.join(" ");
-  return (
-    <h1 className="text-center font-bold mx-auto capitalize">
-      this page is {id}
-    </h1>
-  );
+  return <h1 className="text-center font-bold mx-auto capitalize">this page is {id}</h1>;
 };
 
 export default Show;

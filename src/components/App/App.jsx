@@ -1,6 +1,6 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../Pages/Home/Home";
-import Header from "../Pages/Hedaer/Header";
+import Header from "../Pages/Header/Header";
 import Footer from "../Pages/Footer/Footer";
 import NotFound from "../Pages/NotFound/NotFound";
 import React, { useEffect, useState } from "react";
@@ -9,9 +9,11 @@ import Show from "../Pages/About/Show";
 import Contact from "../Pages/About/Contact";
 import axios from "axios";
 import Posts from "../Pages/Posts/Posts";
+import LoginRequired from "../Pages/LoginRequired/LoginRequired";
+import Button from "../shared/Button";
+import { MyContext } from "../../context/MyContext";
+import { API_ENDPOINTS } from "../../constants/api";
 // import RouterAbout from "../Pages/About/RouterAbout";
-
-export let MyContext = React.createContext();
 
 const App = () => {
   const [login, setLogin] = useState(false);
@@ -21,26 +23,26 @@ const App = () => {
 
   const fetchSlider = async () => {
     try {
-      let res = await axios.get("https://api.escuelajs.co/api/v1/categories");
+      let res = await axios.get(API_ENDPOINTS.CATEGORIES);
       setSlider(res.data);
     } catch (error) {
       console.log(error.message);
     }
   };
+
   const fetchProducts = async () => {
     try {
-      let res = await axios.get("https://api.escuelajs.co/api/v1/products");
+      let res = await axios.get(API_ENDPOINTS.PRODUCTS);
       setProducts(res.data);
     } catch (error) {
       console.log(error.message);
     }
   };
+
   const fetchPosts = async () => {
     try {
-      let res = await axios.get("https://api.escuelajs.co/api/v1/users");
+      let res = await axios.get(API_ENDPOINTS.USERS);
       setPosts(res.data);
-      console.log(res.data);
-      
     } catch (error) {
       console.log(error.message);
     }
@@ -53,16 +55,9 @@ const App = () => {
   }, []);
   return (
     <div>
-      <button
-        onClick={() => setLogin(!login)}
-        className={
-          login === true
-            ? "btn !font-bold !inline-flex btn-md relative top-15 left-5 z-10 btn-success"
-            : "btn !font-bold !inline-flex btn-md relative top-15 left-5 z-10 btn-error"
-        }
-      >
-        {login === true ? "Log Out" : "Log In"}
-      </button>
+      <Button onClick={() => setLogin(!login)} variant={login ? "success" : "error"} className="relative top-15 left-5 z-10 mb-8">
+        {login ? "Log Out" : "Log In"}
+      </Button>
       <BrowserRouter
         future={{
           v7_relativeSplatPath: true,
@@ -70,25 +65,13 @@ const App = () => {
         }}
       >
         <Header />
-        <MyContext.Provider value={{ slider, products , posts}}>
+        <MyContext.Provider value={{ slider, products, posts }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route
-              path="/about"
-              element={login === true ? <About /> : <Navigate to={"/"} />}
-            />
-            <Route
-              path="/about/:id"
-              element={login === true ? <Show /> : <Navigate to={"/"} />}
-            />
-            <Route
-              path="/about/contact"
-              element={login === true ? <Contact /> : <Navigate to={"/"} />}
-            />
-            <Route
-              path="/posts"
-              element={login === true ? <Posts /> : <Navigate to={"/"} />}
-            />
+            <Route path="/about" element={login === true ? <About /> : <LoginRequired />} />
+            <Route path="/about/:id" element={login === true ? <Show /> : <LoginRequired />} />
+            <Route path="/about/contact" element={login === true ? <Contact /> : <LoginRequired />} />
+            <Route path="/posts" element={login === true ? <Posts /> : <LoginRequired />} />
             {/* <Route path="/about/*" element={<RouterAbout />} /> */}
             <Route path="*" element={<NotFound />} />
           </Routes>

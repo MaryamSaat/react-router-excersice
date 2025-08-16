@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -11,7 +11,7 @@ import "./slider.css";
 
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import { MyContext } from "../../App/App";
+import { MyContext } from "../../../context/MyContext";
 
 export default function Slider() {
   let { slider } = useContext(MyContext);
@@ -42,7 +42,14 @@ export default function Slider() {
           {slider?.map((item) => {
             return (
               <SwiperSlide key={item.id}>
-                <img className="rounded-2xl" src={item.image} />
+                <img
+                  className="rounded-2xl"
+                  src={item.image}
+                  onError={(e) => {
+                    e.target.src = `https://picsum.photos/640/480?random=${item.id}`;
+                  }}
+                  alt={item.name}
+                />
               </SwiperSlide>
             );
           })}
